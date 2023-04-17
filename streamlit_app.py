@@ -5,10 +5,7 @@ import utils
 import os
 import tempfile
 
-
-
 st.title('Audio to translation subtitle generation')
-
 
 
 markdown = ''' 
@@ -21,12 +18,13 @@ English subtitles and a summary from Japanese audio or video files.**
 - We use Whisper model (large-v2) for transcription and Chat GPT (gpt-3.5-turbo) for translation and summarization.
 - The price will be around $ 0.15 for 20 minutes of audio.
 
-**Data policy:**
+**Data policies:**
 
 - The data you upload will be sent to Open AI.
-- It will not be used to train models but may be viewed by Open AI.
+- It will not be used to train models but may be viewed by Open AI. [Open AI Data policies](https://openai.com/policies/api-data-usage-policies)
 - This application does not retain any data after your session.
 '''
+
 st.markdown(markdown)
 st.header('Setting')
 api_key = st.text_input('Enter your OpenAI API key (do not include \' or " ).', '', type="default")
@@ -180,4 +178,3 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
                     file_name = os.path.basename(zip_file_path),
                     mime= "application/zip"
                 )
-
