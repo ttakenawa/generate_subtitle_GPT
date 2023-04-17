@@ -1,2 +1,2 @@
-streamlit==1.21.0 
-ffmpeg
+ffmpeg-python
+streamlit==1.21.0
