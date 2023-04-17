@@ -1,3 +1,5 @@
+#Audio translated subtitle generator
+
 **An application that uses OpenAI APIs to generate Japanese subtitles, 
 English subtitles and a summary from Japanese audio or video files.**
 
