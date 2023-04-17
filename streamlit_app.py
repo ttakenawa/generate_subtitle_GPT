@@ -57,7 +57,12 @@ uploaded_file = st.file_uploader("**Upload a MP3 or a MP4 file.**", type=["mp3",
 test_mode = st.checkbox('**Test mode:** check the box if you want to execute **only for the first 120 seconds.**')
 
 
-st.write('**Click the following Execute button to generate transcriptions and translations, and then download a zip file.**')
+markdown = '''
+**Click the following Execute button** to generate transcriptions and translations,
+and then **download a zip file.** It may take more than 5 minutes for 30 minutes of audio.
+'''
+
+st.markdown(markdown)
 execute = st.button('Execute')
 
 with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
