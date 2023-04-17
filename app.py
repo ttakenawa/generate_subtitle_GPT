@@ -5,11 +5,6 @@ import utils
 import os
 import tempfile
 
-import importlib
-importlib.reload(utils)
-
-
-
 
 
 st.title('Audio to translation subtitle generation')
