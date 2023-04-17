@@ -13,6 +13,6 @@ English subtitles and a summary from Japanese audio or video files.**
 - It will not be used to train models but may be viewed by Open AI. [Open AI Data policies](https://openai.com/policies/api-data-usage-policies)
 - This application does not retain any data after your session.
 
-
+The application runs on the [Streamlit sharing] (https://ttakenawa-generate-subtitle-gpt-streamlit-app-ritblx.streamlit.app/). 
 
 
