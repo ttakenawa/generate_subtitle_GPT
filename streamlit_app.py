@@ -57,7 +57,7 @@ uploaded_file = st.file_uploader("**Upload a MP3 or a MP4 file.**", type=["mp3",
 test_mode = st.checkbox('**Test mode:** check the box if you want to execute **only for the first 120 seconds.**')
 
 
-st.write('**Click the following Execute button** to generate transcriptions and translations, and then **download a zip file.**')
+st.write('**Click the following Execute button to generate transcriptions and translations, and then download a zip file.**')
 execute = st.button('Execute')
 
 with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
@@ -132,13 +132,13 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
             
             st.write('Transcribing ...')
             total_duration, response_list = utils.get_transcribe(mp3_file_path, split_num, api_key, prompt)
-            st.write('Transcription completed. The cost was about $', '{:.3f}'.format(total_duration /60 * 0.006))
+            st.write('Transcription completed. The total duration was', '{:.1f}'.format(total_duration/60) , 'min. The cost was about $', '{:.3f}'.format(total_duration /60 * 0.006))
 
             st.write('Translating ...')
             texts, starts, ends = utils.get_textlists(response_list, split_num, each_duration)
             start_times, end_times, lines_ja = utils.make_sentenses(starts, ends, texts)
             total_token, text_en = utils.get_translation(lines_ja, api_key)
-            st.write('Translation completed. The cost was about $', '{:.3f}'.format(total_token * 0.002 / 1000))
+            st.write('Translation completed. The number of token was ', total_token, ' tokens. The cost was about $', '{:.3f}'.format(total_token * 0.002 / 1000))
             lines_en = utils.text2list(text_en)
 
             ja_srt_data = utils.make_srt(start_times, end_times, lines_ja, mp3_file_path, language='ja') 
