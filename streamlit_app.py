@@ -5,7 +5,7 @@ import utils
 import os
 import tempfile
 
-st.title('Audio to translation subtitle generation')
+st.title('Audio translated subtitle generator')
 
 
 markdown = ''' 
