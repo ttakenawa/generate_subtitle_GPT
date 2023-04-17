@@ -81,17 +81,17 @@ def get_textlists(response_list, split_num, each_duration):
             if start > each_duration:
                 difference = abs(start - start_seconds_list[i+1][1] - each_duration)
 
-            # Delete the part after entering the overlap part.
-            del starts_list[i][j:] 
-            del ends_list[i][j:] 
-            del texts_list[i][j:] 
-            
-            # Delete the beginning of the next track if the difference is within 2 seconds
-            if difference < 2.0:   
-                del starts_list[i+1][:1] 
-                del ends_list[i+1][:1] 
-                del texts_list[i+1][:1]
-            continue
+                # Delete the part after entering the overlap part.
+                del starts_list[i][j:] 
+                del ends_list[i][j:] 
+                del texts_list[i][j:] 
+                
+                # Delete the beginning of the next track if the difference is within 2 seconds
+                if difference < 2.0:   
+                    del starts_list[i+1][:1] 
+                    del ends_list[i+1][:1] 
+                    del texts_list[i+1][:1]
+                continue
     starts = sum(starts_list, []) # [a,b,c] = sum([[a,b], [c]], []) 
     ends = sum(ends_list, [])
     texts = sum(texts_list, [])
