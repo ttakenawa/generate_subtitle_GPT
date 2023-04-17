@@ -50,14 +50,14 @@ if talk_type == 'Conversation': ttype = 'ご機嫌いかがですか。それで
 prompt = '以下の内容を含みます：'+ terms0 + '、' + terms1 + '。\n ' + ttype
 
 show_summary = st.checkbox('Check the box if you want an English summary')
-summarize_ratio = st.number_input('Summarization ratio from 0.1 to 1.0 (only valid if you check the above box.)', min_value=0.1, max_value=1.0, value=0.1)
+summarize_ratio = st.number_input('Summarization ratio from 0.1 to 1.0 (only valid if you check the above box.)', min_value=0.1, max_value=1.0, value=0.2)
 
 uploaded_file = st.file_uploader("**Upload a MP3 or a MP4 file.**", type=["mp3", "mp4"])
 
 test_mode = st.checkbox('**Test mode:** check the box if you want to execute **only for the first 120 seconds.**')
 
 
-st.write('**Click the following Execute button to generate transcriptions and translations, and then download a zip file.**')
+st.write('**Click the following Execute button** to generate transcriptions and translations, and then **download a zip file.**')
 execute = st.button('Execute')
 
 with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
