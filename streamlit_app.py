@@ -42,9 +42,9 @@ terms1 = st.text_input('Terms1', '根元事象、NumPy（ナムパイ）、Pytho
 talk_type = st.selectbox('What kind of talk is your audio?',
                          ('Lecture', 'Meeting', 'Conversation'))
 
-if talk_type == 'Lecture': ttype = '準備は良いですか。それでは授業を開始します。'
-if talk_type == 'Meeting': ttype = '準備は良いですか。それでは会議を開始します。'
-if talk_type == 'Conversation': ttype = 'ご機嫌いかがですか。それではお話ししましょう。' 
+if talk_type == 'Lecture': ttype = '文の区切りは「。」です。準備は良いですか。それでは授業を開始します。'
+if talk_type == 'Meeting': ttype = '文の区切りは「。」です。準備は良いですか。それでは会議を開始します。'
+if talk_type == 'Conversation': ttype = '文の区切りは「。」です。ご機嫌いかがですか。それではお話ししましょう。' 
 prompt = '以下の内容を含みます：'+ terms0 + '、' + terms1 + '。\n ' + ttype
 
 show_summary = st.checkbox('Check the box if you want an English summary')
@@ -140,6 +140,8 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
             st.write('Translating ...')
             texts, starts, ends = utils.get_textlists(response_list, split_num, each_duration)
             start_times, end_times, lines_ja = utils.make_sentenses(starts, ends, texts)
+
+            st.write(lines_ja)
             total_token, text_en = utils.get_translation(lines_ja, api_key)
             st.write('Translation completed. The number of token was ', total_token, ' tokens. The cost was about $', '{:.3f}'.format(total_token * 0.002 / 1000))
             lines_en = utils.text2list(text_en)
@@ -178,3 +180,4 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
                     file_name = os.path.basename(zip_file_path),
                     mime= "application/zip"
                 )
+
