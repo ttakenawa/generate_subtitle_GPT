@@ -212,7 +212,7 @@ def text2list(text_en):
     if len(nums) > 1:
         lines_en.append(text_en[first.end(): nums[0].start()].replace('\n', ''))
         lines_en += [text_en[nums[i].end(): nums[i+1].start()].replace('\n', '')  for i in range(len(nums)-1)]
-    lines_en.append(text_en[nums[len(nums)-1].end():].replace('\n', ''))
+        lines_en.append(text_en[nums[len(nums)-1].end():].replace('\n', ''))
     return lines_en
 
 
