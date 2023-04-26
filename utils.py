@@ -127,34 +127,31 @@ def make_sentenses(starts, ends, texts):
     start_times = []
     end_times = []
     lines = ['']
-    no_punc = False
+    new_time = True
 
     for i, (start, end, text) in enumerate(zip(starts, ends, texts)):
         punc = list(re.finditer(r'。', text))
 
-        # If the previous sentence has "。",  add the current start and end times to the list
-        if no_punc == False:
+        if new_time == True:
             start_times.append(start)
             end_times.append(end)
-        # If the previous sentence has no "。", its start time is not changed, 
-        # but its end time is amended to current sentence's
-        else:
-            end_times[-1] = end
-        
+
         # If the current sentence has "。”, the current sentence is added up to the rightmost "。" 
         # to the prevous sentence, and add the rest to the list as a new sentence
         if not (punc == []):
             lines[-1] += text[:punc[-1].start()+1]
             lines.append( text[punc[-1].start()+1:])
-            no_punc = False
-
-        # If the current sentence has no "。”, add the current sentence to the previous one
+            new_time = True
         else:
             lines[-1] += text
-            no_punc = True
+            new_time = False
+            if len(lines[-1]) > 50:
+                lines.append('')
+                new_time = True
+        
 
-    # Deleted after rightmost "。" in the last sentence because there is no corresponding timeline.    
-    if no_punc == False: 
+    # Deleted the last line if lines is longer than start_times    
+    if len(lines) > len (start_times): 
         lines = lines[:-1]
     return start_times, end_times, lines
 
