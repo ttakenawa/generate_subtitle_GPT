@@ -137,11 +137,11 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
             total_duration, response_list = utils.get_transcribe(mp3_file_path, split_num, api_key, prompt)
             st.write('Transcription completed. The total duration was', '{:.1f}'.format(total_duration/60) , 'min. The cost was about $', '{:.3f}'.format(total_duration /60 * 0.006))
 
-            st.write('Translating ...')
             texts, starts, ends = utils.get_textlists(response_list, split_num, each_duration)
             start_times, end_times, lines_ja = utils.make_sentenses(starts, ends, texts)
 
             st.write(lines_ja)
+            st.write('Translating ...')
             total_token, text_en = utils.get_translation(lines_ja, api_key)
             st.write('Translation completed. The number of token was ', total_token, ' tokens. The cost was about $', '{:.3f}'.format(total_token * 0.002 / 1000))
             lines_en = utils.text2list(text_en)
@@ -180,4 +180,4 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
                     file_name = os.path.basename(zip_file_path),
                     mime= "application/zip"
                 )
-
+                
