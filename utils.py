@@ -174,7 +174,7 @@ def get_translation(lines_ja, api_key):
 
         # Request in evry 30 sentences
         if ((i+1) % 30 == 0) or (i+1 == len(lines_ja)): 
-            message = [{"role": "system", "content": "Translate the following text in brief English strictly line by line. Do not merge two or more lines. Use we for the first person.\n"},
+            message = [{"role": "system", "content": "Translate the following text in brief English strictly line by line. Keep the number of lines and do not merge two or more lines. Use we for the first person.\n"},
                         {"role": "user", "content": text}]
             d = {  
                 "model": "gpt-3.5-turbo",  
