@@ -175,7 +175,7 @@ def get_translation(lines_ja, api_key):
 
         # Request in evry 10 sentences
         if ((i+1) % 10 == 0) or (i+1 == len(lines_ja)): 
-            message = [{"role": "system", "content": "The following Japanese text is segmented to lines by \\n. Translate it in brief English line by line. Start lines with a number. Keep numbers of as they are. Use we for the first person.\n"},
+            message = [{"role": "system", "content": "The following Japanese text is segmented to lines by \\n. Translate it in brief English line by line. Use we for the first person.\n"},
                         {"role": "user", "content": text}]
             d = {  
                 "model": "gpt-3.5-turbo",  
@@ -192,7 +192,7 @@ def get_translation(lines_ja, api_key):
             token = r['usage']['total_tokens']
             
             total_token += token
-            st.write('en:', r['choices'][0]['message']['content']) #後で消す
+            st.write(r['choices'][0]['message']['content']) #後で消す
             text_en += r['choices'][0]['message']['content']
             # Put '\n' to the last row
             if text_en[-2:] != '\n': text_en += '\n'
