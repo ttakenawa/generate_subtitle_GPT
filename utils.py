@@ -145,7 +145,7 @@ def make_sentenses(starts, ends, texts):
         else:
             lines[-1] += text
             new_time = False
-            if len(lines[-1]) > 50:
+            if len(lines[-1]) > 70:
                 lines.append('')
                 new_time = True
         
@@ -172,9 +172,9 @@ def get_translation(lines_ja, api_key):
     for i, line in enumerate(lines_ja):
         text +=  str(i+1) + '. ' + line + '\n '
 
-        # Request in evry 30 sentences
-        if ((i+1) % 30 == 0) or (i+1 == len(lines_ja)): 
-            message = [{"role": "system", "content": "Translate the following text in brief English strictly line by line. Keep the number of lines and do not merge two or more lines. Use we for the first person.\n"},
+        # Request in evry 10 sentences
+        if ((i+1) % 10 == 0) or (i+1 == len(lines_ja)): 
+            message = [{"role": "system", "content": "The following Japanese text is segmented to lines by \\n. Translate it in brief English line by line. Start lines with a number. Keep numbers of as they are. Use we for the first person.\n"},
                         {"role": "user", "content": text}]
             d = {  
                 "model": "gpt-3.5-turbo",  
@@ -189,7 +189,7 @@ def get_translation(lines_ja, api_key):
 
             r = requests.post(url=u, headers=h, json=d).json()
             token = r['usage']['total_tokens']
-            print('token:', token)
+            # print('token:', token)
             total_token += token
             text_en += r['choices'][0]['message']['content']
             # Put '\n' to the last row
@@ -199,17 +199,27 @@ def get_translation(lines_ja, api_key):
 
 
 
-def text2list(text_en):
+def text2list(text_en, start_times):
     '''
     Get a list of sentenses from a long text with \n
     '''
-    nums = list(re.finditer(r'\n\d+. ', text_en)) # list of positions of "\n"
+    nums_position = list(re.finditer(r'\n\d+. ', text_en)) # list of positions of "\n" followed by a number and "."
     first = re.search(r'1. ', text_en) # position of "1."
+    nums = [int(text_en[nums_position[k].start()+1:nums_position[k].end()-2]) for k in range(len(nums_position))] 
+
     lines_en = []
-    if len(nums) > 1:
-        lines_en.append(text_en[first.end(): nums[0].start()].replace('\n', ''))
-        lines_en += [text_en[nums[i].end(): nums[i+1].start()].replace('\n', '')  for i in range(len(nums)-1)]
-        lines_en.append(text_en[nums[len(nums)-1].end():].replace('\n', ''))
+    if len(nums_position) > 1:
+        lines_en.append(text_en[first.end(): nums_position[0].start()].replace('\n', ''))
+        k = 0
+        for i in range(2, len(start_times)):
+            if k >= len(nums) - 1:
+                lines_en.append('')
+            elif nums[k] == i:
+                lines_en.append(text_en[nums_position[k].end(): nums_position[k+1].start()].replace('\n', ''))
+                k += 1
+            else:
+                lines_en.append('')
+        lines_en.append(text_en[nums_position[len(nums)-1].end():].replace('\n', ''))
     return lines_en
 
 
