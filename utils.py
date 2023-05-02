@@ -189,8 +189,9 @@ def get_translation(lines_ja, api_key):
 
             r = requests.post(url=u, headers=h, json=d).json()
             token = r['usage']['total_tokens']
-            # print('token:', token)
+            
             total_token += token
+            st.write('en:', r['choices'][0]['message']['content']) #後で消す
             text_en += r['choices'][0]['message']['content']
             # Put '\n' to the last row
             if text_en[-2:] != '\n': text_en += '\n'
