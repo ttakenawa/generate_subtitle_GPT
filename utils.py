@@ -174,7 +174,8 @@ def get_translation(lines_ja, api_key):
         text +=  str(i+1) + '. ' + line + '\n '
 
         # Request in evry 10 sentences
-        if ((i+1) % 10 == 0) or (i+1 == len(lines_ja)): 
+        law = 10
+        if ((i+1) % law == 0) or (i+1 == len(lines_ja)): 
             message = [{"role": "system", "content": "The following Japanese text is segmented to lines by \\n. Translate it in brief English line by line. Use we for the first person.\n"},
                         {"role": "user", "content": text}]
             d = {  
