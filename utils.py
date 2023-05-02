@@ -2,7 +2,7 @@ import requests
 import csv
 import re
 import time
-import st
+import streamlit as st
 
 
 def transcribe(file_path, output_format, api_key, prompt):
