@@ -192,10 +192,19 @@ def get_translation(lines_ja, api_key):
             token = r['usage']['total_tokens']
             
             total_token += token
-            st.write(r['choices'][0]['message']['content']) #後で消す
-            text_en += r['choices'][0]['message']['content']
-            # Put '\n' to the last row
-            if text_en[-2:] != '\n': text_en += '\n'
+            text_en_temp = r['choices'][0]['message']['content']
+            
+            first = re.search(r'\d+. ', text_en_temp) # position of "1."
+            nums_position = list(re.finditer(r'\n\d+. ', text_en_temp)) # list of positions of "\n" followed by a number and "."
+            text_en_temp2 = str(i + 2 - law) + '. ' + text_en_temp[first.end():nums_position[0].start()] + '\n'
+            for k in range(len(nums_position)-1):
+                text_en_temp2 += str(i + k + 3 - law) + '. ' + text_en_temp[nums_position[k].end():nums_position[k+1].start()] + '\n'
+            text_en_temp2 += str(i + len(nums_position) + 2 - law) + '. ' + text_en_temp[nums_position[len(nums_position)-1].end():]
+            if text_en_temp[-2:] != '\n': text_en_temp += '\n'
+             
+            st.write(text_en_temp2)            
+            text_en += text_en_temp2
+            
             text = ''
     return total_token, text_en
 
