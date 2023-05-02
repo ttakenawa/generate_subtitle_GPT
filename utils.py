@@ -146,7 +146,8 @@ def make_sentenses(starts, ends, texts):
         else:
             lines[-1] += text
             new_time = False
-            if len(lines[-1]) > 70:
+            if len(lines[-1]) > 50:
+                lines[-1] += '。'
                 lines.append('')
                 new_time = True
         
@@ -168,13 +169,16 @@ def get_translation(lines_ja, api_key):
     u = 'https://api.openai.com/v1/chat/completions'  
 
     text = ''
-    text_en = ''
+    
+    # Request in evry 10 sentences
+    law = 10
+    text_en = [law]
+    
     total_token = 0
     for i, line in enumerate(lines_ja):
         text +=  str(i+1) + '. ' + line + '\n '
 
-        # Request in evry 10 sentences
-        law = 10
+        
         if ((i+1) % law == 0) or (i+1 == len(lines_ja)): 
             message = [{"role": "system", "content": "The following Japanese text is segmented to lines by \\n. Translate it in brief English line by line. Use we for the first person.\n"},
                         {"role": "user", "content": text}]
@@ -195,20 +199,10 @@ def get_translation(lines_ja, api_key):
             total_token += token
             text_en_temp = r['choices'][0]['message']['content']
             
-            first = re.search(r'\d+. ', text_en_temp) # position of "1."
-            nums_position = list(re.finditer(r'\n\d+. ', text_en_temp)) # list of positions of "\n" followed by a number and "."
-            if len(nums_position) >= 1:
-                text_en_temp2 = str(i + 2 - law) + '. ' + text_en_temp[first.end():nums_position[0].start()] + '\n'
-                for k in range(len(nums_position)-1):
-                    text_en_temp2 += str(i + k + 3 - law) + '. ' + text_en_temp[nums_position[k].end():nums_position[k+1].start()] + '\n'
-                text_en_temp2 += str(i + len(nums_position) + 2 - law) + '. ' + text_en_temp[nums_position[len(nums_position)-1].end():]
-            else:
-                text_en_temp2 = str(i + 2 - law) + '. ' + text_en_temp[first.end():] + '\n'
             if text_en_temp[-2:] != '\n': text_en_temp += '\n'
-             
-            st.write(text_en_temp2)            
-            text_en += text_en_temp2
-            
+            st.write(text_en_temp)          
+            text_en.append(text_en_temp)
+                           
             text = ''
     return total_token, text_en
 
@@ -218,25 +212,35 @@ def text2list(text_en, start_times):
     '''
     Get a list of sentenses from a long text with \n
     '''
-    nums_position = list(re.finditer(r'\n\d+. ', text_en)) # list of positions of "\n" followed by a number and "."
-    first = re.search(r'1. ', text_en) # position of "1."
-    nums = [int(text_en[nums_position[k].start()+1:nums_position[k].end()-2]) for k in range(len(nums_position))] 
-
+    law = text_en[0]
     lines_en = []
-    if len(nums_position) > 1:
-        lines_en.append(text_en[first.end(): nums_position[0].start()].replace('\n', ''))
-        k = 0
-        for i in range(2, len(start_times)):
-            if k >= len(nums) - 1:
-                lines_en.append('')
-            elif nums[k] == i:
-                lines_en.append(text_en[nums_position[k].end(): nums_position[k+1].start()].replace('\n', ''))
-                k += 1
+    for k in range(1, len(text_en)):
+        if k == len(text_en)-1:
+            law = ((len(start_times) - 1)  % law) + 1
+        nums_position = list(re.finditer(r'\n\d+. ', text_en[k])) # list of positions of "\n" followed by a number and "."
+        first = re.search(r'\d+. ', text_en[k]) # position of "num."
+        
+        if len(nums_position) == 0:
+            lines_en_temp = [text_en[k][first.end():].replace('\n', '')]
+            lines_en_temp += [''] * (law - 1)
+        else:
+            lines_en_temp = [text_en[k][first.end(): nums_position[0].start()].replace('\n', '')]
+            
+            if len(nums_position) < law:
+                for i in range(len(nums_position)-1):
+                    lines_en_temp += [text_en[k][nums_position[i].end(): nums_position[i+1].start()].replace('\n', '')]
+                lines_en_temp.append(text_en[k][nums_position[len(nums_position)-1].end():].replace('\n', ''))
+                lines_en_temp += [''] * (law - len(nums_position) - 1)
             else:
-                lines_en.append('')
-        lines_en.append(text_en[nums_position[len(nums)-1].end():].replace('\n', ''))
-    return lines_en
+                for i in range(law-2):
+                    lines_en_temp += [text_en[k][nums_position[i].end(): nums_position[i+1].start()].replace('\n', '')]
+                for i in range(law-2, len(nums_position)-1):
+                    lines_en_temp[-1] += ' ' + text_en[k][nums_position[i].end(): nums_position[i+1].start()].replace('\n', '')
+                lines_en_temp[-1] += ' ' + text_en[k][nums_position[len(nums_position)-1].end():].replace('\n', '')
+                
+        lines_en += lines_en_temp
 
+    return lines_en
 
 def get_summary(lines_en,  api_key, summarize_ratio = 0.1, batch_size = 100): 
     '''
