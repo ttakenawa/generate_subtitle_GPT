@@ -144,7 +144,7 @@ with tempfile.TemporaryDirectory(prefix="tmp_", dir=".") as dirpath:
             st.write('Translating ...')
             total_token, text_en = utils.get_translation(lines_ja, api_key)
             st.write('Translation completed. The number of token was ', total_token, ' tokens. The cost was about $', '{:.3f}'.format(total_token * 0.002 / 1000))
-            lines_en = utils.text2list(text_en)
+            lines_en = utils.text2list(text_en, start_times)
 
             ja_srt_data = utils.make_srt(start_times, end_times, lines_ja, mp3_file_path, language='ja') 
             ja_csv_data = utils.make_csv(start_times, end_times, lines_ja, mp3_file_path, language='ja')
