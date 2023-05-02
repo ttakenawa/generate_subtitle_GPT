@@ -1,7 +1,8 @@
 import requests
 import csv
 import re
-import time 
+import time
+import st
 
 
 def transcribe(file_path, output_format, api_key, prompt):
